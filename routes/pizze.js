@@ -1,8 +1,6 @@
 import express from 'express';
 
-
 const pizzeRouter = express.Router();
-
 
 const pizze = [
     { id: 1, naziv: "Margerita", cijena: 6.5 },
@@ -10,23 +8,24 @@ const pizze = [
     { id: 3, naziv: "Capriciossa", cijena: 9.5 }
 ];
 
-
 pizzeRouter.get('/', (req, res) => {
     res.json(pizze);
 });
 
-
 pizzeRouter.get('/:id', (req, res) => {
-    const id_pizza = req.params.id;
-    const pizza = pizze.find(pizza => pizza.id == id_pizza);
+    const id_pizza = parseInt(req.params.id);
 
-    if (pizza) {
-        res.json(pizza);
-    } else {
-        res.json({ message: 'ID ne postoji!' });
+    if (isNaN(id_pizza)) {
+        return res.status(400).json({ message: 'Neispravan ID pizze!' });
     }
+
+    const pizza = pizze.find(pizza => pizza.id === id_pizza);
+
+    if (!pizza) {
+        return res.status(404).json({ message: 'Pizza s tim ID-em ne postoji!' });
+    }
+
+    res.json(pizza);
 });
-
-
 
 export default pizzeRouter;
